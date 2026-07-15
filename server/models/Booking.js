@@ -1,18 +1,42 @@
 import mongoose from 'mongoose';
-import { v4 as uuidv4 } from 'uuid';
 
 const bookingSchema = new mongoose.Schema({
-  bookingId: { type: String, unique: true, default: () => 'BK' + uuidv4().slice(0,6).toUpperCase() },
-  ticketId: { type: String }, // keep this if you use it for QR
-  templeId: { type: String, required: true },
-  templeName: { type: String, required: true },
-  userId: { type: String, required: true },
-  phone: { type: String, required: true },
-  fullName: { type: String },
-  date: { type: Date, required: true },
-  slot: { type: String, required: true },
-  people: { type: Number, default: 1 },
-  createdAt: { type: Date, default: Date.now }
-});
+  bookingId: { 
+    type: String, 
+    unique: true,
+    default: () => 'BK' + Date.now() // Auto generates BK17123456789
+  },
+  templeId: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'Temple', 
+    required: true 
+  },
+  userName: { 
+    type: String, 
+    required: true 
+  },
+  userPhone: { 
+    type: String, 
+    required: true 
+  },
+  email: { 
+    type: String, 
+    required: true 
+  },
+  people: { 
+    type: Number, 
+    required: true,
+    min: 1
+  },
+  qrCode: { type: String},
+  date: { 
+    type: String, 
+    required: true 
+  },
+  slot: { 
+    type: String, 
+    required: true 
+  },
+}, { timestamps: true });
 
 export default mongoose.model('Booking', bookingSchema);

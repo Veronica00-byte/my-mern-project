@@ -1,29 +1,31 @@
-const express = require('express');
-const router = express.Router();
-const Booking = require('../models/Booking');
-const DarshanSlot = require('../models/DarshanSlot');
-const { protect, authorize } = require('../middleware/authMiddleware');
+import express from 'express';
+import Booking from '../models/Booking.js';
+import QRCode from 'qrcode';
 
-router.post('/', protect, authorize('USER'), async (req, res) => {
-  const { slotId, devoteeCount } = req.body;
-  const slot = await DarshanSlot.findById(slotId);
-  if (slot.bookedSeats + devoteeCount > slot.availableSeats) {
-    return res.status(400).json({ message: 'Slot full' });
+const router = express.Router();
+
+router.post('/', async (req, res) => {
+  try {
+    const booking = new Booking(req.body);
+    await booking.save();
+    
+    const qrData = `BookingID: ${booking.bookingId}
+Name: ${booking.userName}
+Date: ${booking.date}
+Slot: ${booking.slot}`;
+    
+    booking.qrCode = await QRCode.toDataURL(qrData);
+    await booking.save();
+
+    res.status(201).json(booking);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
   }
-  slot.bookedSeats += devoteeCount;
-  await slot.save();
-  
-  const booking = await Booking.create({
-    user: req.user._id,
-    slot: slotId,
-    devoteeCount,
-    totalAmount: slot.price * devoteeCount
-  });
-  res.status(201).json(booking);
 });
 
-router.get('/my', protect, async (req, res) => {
-  const bookings = await Booking.find({ user: req.user._id }).populate('slot');
+router.get('/', async (req, res) => {
+  const bookings = await Booking.find();
   res.json(bookings);
 });
-module.exports = router;
+
+export default router;

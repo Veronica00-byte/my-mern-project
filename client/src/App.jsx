@@ -1,12 +1,13 @@
+import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Navbar from './components/Navbar';
 import Login from './pages/Login';
 import Temples from './pages/Temples';
 import Booking from './pages/Booking';
 import MyBookings from './pages/MyBookings';
+import Navbar from './components/Navbar';
 
 function App() {
-  const user = JSON.parse(localStorage.getItem('user'));
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')));
 
   return (
     <Router>
@@ -15,7 +16,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/temples" element={user ? <Temples /> : <Navigate to="/login" />} />
         <Route path="/booking/:id" element={user ? <Booking /> : <Navigate to="/login" />} />
-        <Route path="/my-bookings" element={user ? <MyBookings /> : <Navigate to="/login" />} />
+        <Route path="/mybookings" element={user ? <MyBookings /> : <Navigate to="/login" />} />
         <Route path="/" element={<Navigate to="/login" />} />
       </Routes>
     </Router>
