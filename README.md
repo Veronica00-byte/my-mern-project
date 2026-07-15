@@ -39,4 +39,9 @@ Frontend: http://localhost:5173
 Backend: http://localhost:5000
 
 
+## 📺 Video Demo
+You can watch the full digital marketing and Salesforce implementation video here:
+[▶️ Click here to watch the Video Demo on Google Drive](https://drive.google.com/drive/folders/19yuHxXGqVBKRVOXA_9p8GsQCQkInIoMZ?usp=drive_link)
+
+
 
